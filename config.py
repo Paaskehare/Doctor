@@ -1,10 +1,10 @@
 #!/usr/bin/python
 # coding: utf-8
 
-server = 'irc.quakenet.org', 6667
+server = 'irc.freenode.org', 6667
 
 # Nickname of the bot
-nick = 'OlDoctor'
+nick = 'Doctor'
 realname = nick
 
 # List of channels to join on connect
