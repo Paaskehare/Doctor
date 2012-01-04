@@ -13,6 +13,7 @@ MODULE_NAME = 'title'
 
 TitlePattern = re.compile(b'<title.*>(.*?)<\/title>', re.I | re.S)
 YouTubePattern = re.compile('http://(www\.)?youtube\.com/watch\?v=([a-zA-Z0-9\-_]{10,13})', re.I)
+URLPattern = re.compile('((http|ftp|https):\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&amp;:/~\+#]*[\w\-\@?^=%&amp;/~\+#])?)', re.I)
 
 def title(url):
     page = None
@@ -50,10 +51,10 @@ def youtube(id):
         return
 
 
-@doctor.hooks.pubmsg
+@pubmsg
 def message(user, channel, msg):
   
-  match = re.search(r'((http|ftp|https):\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&amp;:/~\+#]*[\w\-\@?^=%&amp;/~\+#])?)', msg)
+  match = re.search(URLPattern, msg)
   if match:
     url = match.groups(0)[0]
 
