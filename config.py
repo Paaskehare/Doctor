@@ -3,6 +3,11 @@
 
 server = 'irc.freenode.org', 6667
 
+# for password use either None, 'password', or 'username:password'
+password = None
+usessl = False
+
+
 # Nickname of the bot
 nick = 'Doctor'
 realname = nick

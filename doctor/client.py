@@ -53,10 +53,11 @@ class OutputManager(Thread):
 
 class Client(SingleServerIRCBot):
 
-  def __init__(self, nickname, server, channels):
+  def __init__(self, nickname, server, channels, password, usessl):
     self._channels = channels
     self.nickname = nickname
-    SingleServerIRCBot.__init__(self, [server], self.nickname, self.nickname)
+    SingleServerIRCBot.__init__(self, [server], self.nickname, self.nickname,
+            password=password, sslsock=usessl)
     self.commands = {}
     self.queue = OutputManager(self.connection)
     self.queue.start()
