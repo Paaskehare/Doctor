@@ -3,13 +3,15 @@
 
 server = 'irc.freenode.org', 6667
 
-# for password use either None, 'password', or 'username:password'
+# For password use either None, 'password', or 'username:password'
 password = None
-usessl = False
+
+# Use SSL?
+use_ssl = False
 
 
 # Nickname of the bot
-nick = 'Doctor'
+nick = 'Doctor23'
 realname = nick
 
 # List of channels to join on connect
@@ -26,7 +28,8 @@ scripts = [
   'title',
 ]
 
-
+# Bot Line prefix
 prefix = '\x034>\x0F '
 
+# Command triggers
 trigger = '!', '.'

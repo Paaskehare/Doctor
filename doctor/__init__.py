@@ -3,3 +3,5 @@
 
 import config
 from doctor.client import Client
+
+hooks = {}

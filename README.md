@@ -4,10 +4,8 @@ But is instead focusing on pretty and functional scripting support.
 An easily extensible IRC Bot written in Python 3
 - based on the py3 branch of [python-irclib](https://github.com/farces/python-irclib/tree/py3)
 
-The "Plugin Manager" enables you to load, reload and unload plugins on the fly as the bot is running, simply write:
-`.load example` to the bot, and it will load `example.py` in the *scripts* directory.
-
-`.unload` and `.reload` should be self-explanatory
+The "Plugin Manager" enables you to reload, plugins on the fly as the bot is running, simply write:
+`.reload` to the bot, and it will reload the plugins in the *scripts* directory.
 
 
 

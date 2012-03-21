@@ -24,7 +24,7 @@ from threading import Thread, Event
 
 from doctor.irclib import nm_to_n, nm_to_h, irc_lower
 from doctor.ircbot import SingleServerIRCBot
-from doctor.hooks import hooks, hookable
+from doctor.hooks import hookable
 from doctor.script import ScriptManager
 
 import config
@@ -53,15 +53,14 @@ class OutputManager(Thread):
 
 class Client(SingleServerIRCBot):
 
-  def __init__(self, nickname, server, channels, password, usessl):
+  def __init__(self, nickname, server, channels):
     self._channels = channels
     self.nickname = nickname
-    SingleServerIRCBot.__init__(self, [server], self.nickname, self.nickname,
-            password=password, sslsock=usessl)
+    SingleServerIRCBot.__init__(self, [server], self.nickname, self.nickname)
     self.commands = {}
     self.queue = OutputManager(self.connection)
     self.queue.start()
-    self.sm = ScriptManager(self, config.scripts)
+    self.scripts = ScriptManager(self, config.scripts)
     self.start()
 
   @hookable
@@ -79,15 +78,8 @@ class Client(SingleServerIRCBot):
     print('%s > %s: %s' % (source, channel, message))
     if message.startswith(config.trigger):
       argument = arguments[0][1:]
-      if argument == 'load':
-        for arg in arguments[1:]:
-          self.sm.load(arg)
-      elif argument == 'unload':
-        for arg in arguments[1:]:
-          self.sm.unload(arg)
-      elif argument == 'reload':
-        for arg in arguments[1:]:
-          self.sm.reload(arg)
+      if argument == 'reload':
+          self.scripts.reload()
       else:
         try: self.commands[argument](source, channel, arguments)
         except: pass
