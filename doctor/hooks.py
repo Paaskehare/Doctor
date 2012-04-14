@@ -16,10 +16,9 @@ def hookable(target, *args, **kwargs):
     return target(*args, **kwargs)
   return wrapper
 
-class pubmsg:
+class Hook:
   def __init__(self, f):
-    create_or_append('pubmsg', f)
+    create_or_append(self.__class__.__name__, f)
 
-class welcome:
-  def __init__(self, f):
-    create_or_append('welcome', f)
+class pubmsg(Hook): pass
+class welcome(Hook): pass
