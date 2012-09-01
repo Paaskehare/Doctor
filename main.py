@@ -1,10 +1,12 @@
 #!/usr/bin/env python
+# encoding: utf-8
 
-from doctor import Client
 import config
+import doctor
+
+from doctor.irc import Network
 
 if __name__ == '__main__':
-  try:
-    bot = Client(config.nick, config.server, config.channels)
-  except KeyboardInterrupt:
-    print('Shutting down')
+    bot = Network('+irc.freenode.org', 6697, "Doctorious", channels=['#ole', '#monkeytime'])
+    bot.identify()
+    bot.run()
