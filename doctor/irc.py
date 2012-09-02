@@ -80,7 +80,8 @@ class Connection:
         try:
             self._socket.connect((socket.gethostbyname(self._host), self._port))
 
-        except socket.error:
+        except socket.error as error:
+            print(error.__traceback__[0])
             return False
 
         self.listener = self._socket.makefile('r', 512)
@@ -144,11 +145,16 @@ class Network(Connection):
         message = ' '.join(rest)[1:]
 
         if receiver.startswith('#'):
-            # pubmsg
+            # public msg
             channel = self.channel_by_name(receiver)
             if channel:
                 print('%s -> "%s": %s' % (channel.name, user.nick, message))
                 self.message(user, channel, message)
+        else:
+            # private msg
+            if not user:
+                user = self.user_by_host(host, create=True)
+                self.private_message(user, message)
         return ''
 
     def got_nick(self, host, mode, receiver, rest):
@@ -197,8 +203,19 @@ class Network(Connection):
         print('Got Quit')
 
     def got_kick(self, host, mode, receiver, rest):
-        print('Got Kick')
+        user = self.user_by_host(host)
+        channel = self.channel_by_name(receiver)
+        kickee = self.user_by_nick(rest[0])
+        reason = rest[1][1:]
 
+        channel.users.remove(user)
+        user.channels.remove(channel)
+
+        if not user.channels:
+            self.users.remove(user)
+
+        self.user_kicked(self, user, channel, kickee, reason)
+        
     def got_topic(self, host, mode, receiver, rest):
         print('Got Topic')
 
@@ -260,6 +277,8 @@ class Network(Connection):
         return user
 
     def user_by_host(self, host, create=False):
+        if host.startswith(':'): host = host[1:]
+
         nick, hostmask = host.split('!')
         ident, host    = hostmask.split('@')
 
@@ -297,7 +316,6 @@ class Network(Connection):
 
     @hookable
     def message(self, user, channel, message):
-        print(message)
         if message.startswith(config.trigger):
             arguments = ''
             command, *args = message[1:].split(' ', 1)
