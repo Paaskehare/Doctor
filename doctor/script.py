@@ -5,6 +5,18 @@ import doctor
 import re
 import sys
 
+# Decorator for aliasing commands
+class Alias:
+    def __init__(self, *aliases):
+        self.aliases = aliases
+
+    def __call__(self, f):
+        for alias in self.aliases:
+            doctor.commands[alias] = f
+        def wrapper(*args, **kwargs):
+            f(*args)
+        return wrapper
+
 class ScriptManager:
     def __init__(self):
         for script in doctor.config.scripts:
@@ -43,8 +55,23 @@ class ScriptManager:
 
         return
 
-    def reload(self):
+    def load(self, plugin):
+        self._load(plugin)
+
+    def unload(self, plugin):
         doctor.hookables = {}
+
+        plugin = self.serialize(plugin)
+
         for script in doctor.scripts:
             self._unload(script)
+
+        doctor.scripts.remove(plugin)
+        self.reload(unload=False)
+
+    def reload(self, unload=True):
+        doctor.hookables = {}
+
+        for script in doctor.scripts:
+            if unload: self._unload(script)
             self._load(script)

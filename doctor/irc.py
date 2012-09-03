@@ -119,9 +119,7 @@ class Connection:
 
 class Network(Connection):
 
-    commands = {}
-
-    def _null(self, host, mode, receiver, rest):
+    def _null(self, *args, **kwargs):
         return ''
 
     def got_end_of_motd(self, host, mode, receiver, rest):
@@ -323,11 +321,13 @@ class Network(Connection):
                 arguments = args[0]
 
             if command == 'reload':
-                print('Reloading scripts ..')
                 doctor.script_manager.reload()
 
             elif command in doctor.commands:
-                doctor.commands[command](user, channel, arguments) 
+                try:
+                    doctor.commands[command](user, channel, arguments) 
+                except:
+                    pass
         return
 
     @hookable
