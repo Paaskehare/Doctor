@@ -59,19 +59,17 @@ class ScriptManager:
         self._load(plugin)
 
     def unload(self, plugin):
-        doctor.hookables = {}
-
         plugin = self.serialize(plugin)
 
         for script in doctor.scripts:
             self._unload(script)
 
         doctor.scripts.remove(plugin)
-        self.reload(unload=False)
+        self.reload()
 
-    def reload(self, unload=True):
+    def reload(self):
         doctor.hookables = {}
 
         for script in doctor.scripts:
-            if unload: self._unload(script)
+            self._unload(script)
             self._load(script)

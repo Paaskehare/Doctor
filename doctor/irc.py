@@ -15,7 +15,7 @@ _valid_user_flag = '+', '@', '%', '~'
 class User:
     nick      = ""
     ident     = ""
-    hostname  = ""
+    host      = ""
     flags     = ""
     channels  = []
 
@@ -23,11 +23,11 @@ class User:
 
     def __repr__(self):  return '<User: "%s">' % self.nick
 
-    def __init__(self, network, nick, flags='', ident='', hostname=''):
+    def __init__(self, network, nick, flags='', ident='', host=''):
         self.network  = network
         self.flags    = flags
         self.ident    = ident
-        self.hostname = hostname
+        self.host     = host
 
         if nick.startswith(_valid_user_flag):
             self.flags += nick[0]
@@ -81,7 +81,7 @@ class Connection:
             self._socket.connect((socket.gethostbyname(self._host), self._port))
 
         except socket.error as error:
-            print(error.__traceback__[0])
+            print(error)
             return False
 
         self.listener = self._socket.makefile('r', 512)
@@ -284,7 +284,7 @@ class Network(Connection):
 
         if user:
             if not user.ident:     user.ident = ident
-            if not user.hostname:  user.host  = host
+            if not user.host:      user.host  = host
 
         return user 
 
@@ -320,12 +320,13 @@ class Network(Connection):
             if args:
                 arguments = args[0]
 
-            if command == 'reload':
-                doctor.script_manager.reload()
+            print(doctor.commands)
 
-            elif command in doctor.commands:
+            if command in doctor.commands:
                 try:
                     doctor.commands[command](user, channel, arguments) 
+                except BaseException as exc:
+                    print('%s: %s' % (exc.__class__.__name__, exc))
                 except:
                     pass
         return
