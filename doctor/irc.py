@@ -75,6 +75,7 @@ class Connection:
             self._ssl = True
 
     def connect(self):
+        logging.debug('Establishing connection to %s:%s' % (self._host, self._port))
         self._socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         if self._ssl:
             self._socket = ssl.wrap_socket(self._socket)
@@ -102,11 +103,10 @@ class Connection:
 
         if len(msg) > 2:
             log_event  = msg[0]
-            log_spaces = ' ' * (8 - len(log_event))
             log_message = ' '.join(msg[1:])
 
-            logging.debug('\033[91m→\033[0m %s%s %s' % (
-              log_event, log_spaces,
+            logging.debug('\033[91m→\033[0m %s %s' % (
+              log_event.ljust(8),
               ('"%s"' % log_message if log_message else '' )
             ))
 
@@ -255,6 +255,7 @@ class Network(Connection):
         self.identify()
 
     def identify(self):
+        logging.debug('Identifying')
         self.connect()
         self.send('USER', self.ident, '8', '*', ':' + self.realname)
         self.send('NICK', self.nick)
@@ -301,11 +302,10 @@ class Network(Connection):
             if len(parts) > 2:
                 host, mode, receiver, *rest = parts
 
-                log_spaces = ' ' * (8 - len(mode))
                 log_message = ' '.join(rest)[1:]
 
-                logging.debug('\033[92m←\033[0m %s%s "%s" %s' % (
-                    mode, log_spaces, receiver, 
+                logging.debug('\033[92m←\033[0m %s "%s" %s' % (
+                    mode.ljust(8), receiver, 
                     ('"%s"' % log_message if log_message else '' )
                 ))
                 self._actions.get(mode, self._null)(host, mode, receiver, rest)
