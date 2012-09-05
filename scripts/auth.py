@@ -1,8 +1,8 @@
 import doctor
 
-admins = [
+admins = (
   'ole!~ole@ole.im',
-]
+)
 
 def command_unload(user, channel, args):
     if is_authorized(user):

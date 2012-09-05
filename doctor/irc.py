@@ -10,6 +10,7 @@ import doctor
 
 from doctor.hooks import hookable
 
+logging = doctor.logging
 _valid_user_flag = '+', '@', '%', '~'
 
 class User:
@@ -81,7 +82,7 @@ class Connection:
             self._socket.connect((socket.gethostbyname(self._host), self._port))
 
         except socket.error as error:
-            print(error)
+            logging.warning(error)
             return False
 
         self.listener = self._socket.makefile('r', 512)
@@ -99,7 +100,16 @@ class Connection:
 
         line = line.encode('utf-8')
 
-        print('==> ' + repr(line))
+        if len(msg) > 2:
+            log_event  = msg[0]
+            log_spaces = ' ' * (8 - len(log_event))
+            log_message = ' '.join(msg[1:])
+
+            logging.debug('\033[91m→\033[0m %s%s %s' % (
+              log_event, log_spaces,
+              ('"%s"' % log_message if log_message else '' )
+            ))
+
         self._socket.send(line)
 
     def parse(self, line): return
@@ -112,7 +122,6 @@ class Connection:
             line = self.listener.readline()
             line = line.strip()
             if line:
-                print('<== ' + repr(line))
                 response = self.parse(line)
                 if response:
                     self.send(response)
@@ -146,7 +155,6 @@ class Network(Connection):
             # public msg
             channel = self.channel_by_name(receiver)
             if channel:
-                print('%s -> "%s": %s' % (channel.name, user.nick, message))
                 self.message(user, channel, message)
         else:
             # private msg
@@ -157,22 +165,16 @@ class Network(Connection):
 
     def got_nick(self, host, mode, receiver, rest):
         user = self.user_by_host(host)
-        print(user)
         old_nick = user.nick
         user.nick = receiver[1:]
-        print('%s is now know as: %s' % (old_nick, user.nick))
-        print(user)
         for channel in user.channels:
             self.user_rename(user, channel, old_nick)
-
-        print('Got nickchange')
 
     def got_join(self, host, mode, receiver, rest):
         user = self.user_by_host(host, create=True)
         channel = self.channel_by_name(receiver)
 
         self.user_joined(user, channel)
-        print('Got Join')
 
     def got_part(self, host, mode, receiver, rest):
         user = self.user_by_host(host)
@@ -186,7 +188,6 @@ class Network(Connection):
         if not user.channels:
             self.users.remove(user)
             del user
-        print('Got Part')
 
     def got_quit(self, host, mode, receiver, rest):
         user = self.user_by_host(host)
@@ -198,7 +199,6 @@ class Network(Connection):
 
         self.users.remove(user)
         del user
-        print('Got Quit')
 
     def got_kick(self, host, mode, receiver, rest):
         user = self.user_by_host(host)
@@ -215,10 +215,10 @@ class Network(Connection):
         self.user_kicked(self, user, channel, kickee, reason)
         
     def got_topic(self, host, mode, receiver, rest):
-        print('Got Topic')
+        return
 
     def got_mode(self, host, mode, receiver, rest):
-        print('Got Mode')
+        return
 
     def __init__(self, host, port, nick, ident = "", realname = "", channels = []):
 
@@ -251,6 +251,8 @@ class Network(Connection):
 
         for channel in channels:
             self.channels[channel] = Channel(self, channel)
+
+        self.identify()
 
     def identify(self):
         self.connect()
@@ -298,6 +300,14 @@ class Network(Connection):
 
             if len(parts) > 2:
                 host, mode, receiver, *rest = parts
+
+                log_spaces = ' ' * (8 - len(mode))
+                log_message = ' '.join(rest)[1:]
+
+                logging.debug('\033[92m←\033[0m %s%s "%s" %s' % (
+                    mode, log_spaces, receiver, 
+                    ('"%s"' % log_message if log_message else '' )
+                ))
                 self._actions.get(mode, self._null)(host, mode, receiver, rest)
         return 
 
@@ -320,13 +330,11 @@ class Network(Connection):
             if args:
                 arguments = args[0]
 
-            print(doctor.commands)
-
             if command in doctor.commands:
                 try:
                     doctor.commands[command](user, channel, arguments) 
                 except BaseException as exc:
-                    print('%s: %s' % (exc.__class__.__name__, exc))
+                    logging.warning('%s: %s' % (exc.__class__.__name__, exc))
                 except:
                     pass
         return

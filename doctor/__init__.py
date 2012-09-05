@@ -2,6 +2,7 @@
 # encoding: utf-8
 
 import config
+import logging
 
 from doctor.script import ScriptManager, Alias
 
@@ -22,3 +23,5 @@ scripts   = []
 commands  = {}
 
 script_manager = ScriptManager()
+
+logging.basicConfig(format='%(asctime)s \033[1m%(levelname)s\033[0m  %(message)s', level=logging.DEBUG, datefmt='%H:%M:%S')

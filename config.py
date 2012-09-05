@@ -3,6 +3,7 @@
 scripts = [
   'auth',
   'example',
+  'calc',
 ]
 
 trigger = '!', '.'

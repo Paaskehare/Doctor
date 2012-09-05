@@ -8,5 +8,4 @@ from doctor.irc import Network
 
 if __name__ == '__main__':
     bot = Network('irc.quakenet.org', 6667, "Doctorious", channels=['#doctor'])
-    bot.identify()
     bot.run()
