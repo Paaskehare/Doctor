@@ -18,6 +18,7 @@ def command_load(user, channel, args):
 def command_reload(user, channel, args):
     if is_authorized(user):
         doctor.script_manager.reload()
+        channel.say('Reloaded.')
 
 def is_authorized(user):
     return '{.nick}!{.ident}@{.host}'.format(user, user, user) in admins

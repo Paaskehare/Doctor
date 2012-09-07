@@ -8,7 +8,8 @@ def hookable(target, *args, **kwargs):
         event = target.__name__
         if event in doctor.hookables:
             for hook in doctor.hookables[event]:
-                hook(*args, **kwargs)
+                try: hook(*args, **kwargs)
+                except: pass
         return target(*args, **kwargs)
     return wrapper
 

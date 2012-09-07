@@ -4,6 +4,7 @@ scripts = [
   'auth',
   'example',
   'calc',
+  'title',
 ]
 
 trigger = '!', '.'
