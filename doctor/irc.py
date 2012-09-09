@@ -11,7 +11,8 @@ import doctor
 from doctor.hooks import hookable
 
 logging = doctor.logging
-_valid_user_flag = '+', '@', '%', '~'
+
+_valid_user_flag = '+', '@', '%', '&', '~', 'q'
 
 class User:
     nick      = ""
@@ -22,16 +23,18 @@ class User:
 
     network = None
 
-    def __repr__(self):  return '<User: "%s">' % self.nick
+    def __repr__(self):  return self.nick
 
     def __init__(self, network, nick, flags='', ident='', host=''):
         self.network  = network
-        self.flags    = flags
         self.ident    = ident
         self.host     = host
 
+        for flag in flags:
+            self.flags += self.prefix_to_flag(flag)
+
         if nick.startswith(_valid_user_flag):
-            self.flags += nick[0]
+            self.flags += self.prefix_to_flag(nick[0])
             nick = nick[1:]
 
         self.nick = nick
@@ -40,13 +43,22 @@ class User:
         message = ':' + message
         self.network.send('PRIVMSG', self.nick, message)
 
+    def prefix_to_flag(self, prefix):
+        return {
+          '+': 'v',
+          '@': 'o',
+          '%': 'h',
+          '&': 'a',
+          '~': 'q',
+        }.get(prefix, '')
+
 class Channel:
     name = ""
     users = []
 
     network = None
 
-    def __repr__(self):  return '<Channel: "%s">' % self.name
+    def __repr__(self):  return self.name
 
     def __init__(self, network, name):
         self.name     = name
@@ -265,7 +277,7 @@ class Network(Connection):
 
         flags = ""
 
-        if nick.startswith(_valid_user_flag):
+        if create and nick.startswith(_valid_user_flag):
             flags += nick[0]
             nick = nick[1:]
 
@@ -286,8 +298,8 @@ class Network(Connection):
         user = self.user_by_nick(nick, create)
 
         if user:
-            if not user.ident:     user.ident = ident
-            if not user.host:      user.host  = host
+            if not user.ident:  user.ident = ident
+            if not user.host:   user.host  = host
 
         return user 
 
