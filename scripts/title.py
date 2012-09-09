@@ -14,10 +14,15 @@ YouTubePattern = re.compile('https?://(www\.)?(youtube\.com/.+(\?|&)v=|youtu\.be
 URLPattern = re.compile('((http|ftp|https):\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&amp;:/~\+#]*[\w\-\@?^=%&amp;/~\+#])?)', re.I)
 MediaPattern = re.compile('(png|jpg|bmp|gif|avi|mpg|flv|3gp|mp4|exe|msi|mp3|flac|tar\.gz|tar\.bz2)$', re.I)
 
-def read_page(url):
+def read_page(url, amount=0):
     page = b''
-    try:    page =  urlopen(url, timeout = 2.0).read()
-    except: pass
+    if not amount:
+      try:    page =  urlopen(url, timeout = 2.0).read()
+      except: pass
+    else:
+      try:    page =  urlopen(url, timeout = 2.0).read(amount)
+      except: pass
+
     return page
 
 def title(url):
@@ -34,7 +39,7 @@ def title(url):
     else:
         if MediaPattern.match(url): return
 
-        page = read_page(url)
+        page = read_page(url, 1024)
         title = TitlePattern.search(page)
         
         if title:

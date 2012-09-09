@@ -282,7 +282,8 @@ class Network(Connection):
             nick = nick[1:]
 
         try:
-            user = [u for u in self.users if u.nick == nick][0]
+            nickname = nick.lower()
+            user = [u for u in self.users if u.nick.lower() == nickname][0]
         except IndexError:
             if create:
                 user = User(self, nick, flags)
