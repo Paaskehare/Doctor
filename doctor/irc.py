@@ -8,6 +8,8 @@ import ssl
 import config
 import doctor
 
+from traceback import extract_tb
+
 from doctor.hooks import hookable
 
 logging = doctor.logging
@@ -347,6 +349,12 @@ class Network(Connection):
                 try:
                     doctor.commands[command](user, channel, arguments) 
                 except BaseException as exc:
+                    traceback = extract_tb(exc.__traceback__)
+                    for e in traceback:
+                      f, l, m, s = e
+                      if not f.endswith('doctor/irc.py'):
+                        logging.warning('File "%s", line %s, in %s' % (f, l, m))
+                        logging.warning('  %s' % s)
                     logging.warning('%s: %s' % (exc.__class__.__name__, exc))
                 except:
                     pass

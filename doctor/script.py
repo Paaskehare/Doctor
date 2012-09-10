@@ -57,6 +57,7 @@ class ScriptManager:
 
     def load(self, plugin):
         self._load(plugin)
+        doctor.logging.debug('- %s "Loaded %s"' % ('SCRIPT'.ljust(8), plugin))
 
     def unload(self, plugin):
         plugin = self.serialize(plugin)
