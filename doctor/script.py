@@ -69,6 +69,7 @@ class ScriptManager:
         self.reload()
 
     def reload(self):
+        doctor.logging('- %s "Reloaded scripts"' % ('SCRIPT'.ljust(8)))
         doctor.hookables = {}
 
         for script in doctor.scripts:
