@@ -5,7 +5,6 @@ import socket
 import logging
 import ssl
 
-import config
 import doctor
 
 from traceback import extract_tb

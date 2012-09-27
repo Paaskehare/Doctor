@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # encoding: utf-8
 
-import config
 import logging
 
 from doctor.script import ScriptManager, Alias
