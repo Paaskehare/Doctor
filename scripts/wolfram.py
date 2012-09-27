@@ -36,4 +36,4 @@ def command_calc(user, channel, arguments):
   if result:
     channel.say('%(question)s \x034=\x03 %(answer)s' % result)
   else:
-    channel.say('No result', channel)
+    channel.say('No result')

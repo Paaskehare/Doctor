@@ -5,7 +5,8 @@ import config
 import doctor
 
 from doctor.irc import Network
+from doctor import Doctor
 
 if __name__ == '__main__':
-    bot = Network('irc.quakenet.org', 6667, 'Doctorious', channels=['#doctor', '#ole'])
+    bot = Doctor(config.options)
     bot.run()

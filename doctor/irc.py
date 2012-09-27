@@ -41,9 +41,9 @@ class User:
 
         self.nick = nick
 
-    def say(self, message):
-        message = ':' + message
-        self.network.send('PRIVMSG', self.nick, message)
+    def say(self, message, prefix = True):
+        message = doctor.prefix + message if prefix else message
+        self.network.send('PRIVMSG', self.nick, ':' + message)
 
     def prefix_to_flag(self, prefix):
         return {
@@ -66,9 +66,9 @@ class Channel:
         self.name     = name
         self.network  = network 
 
-    def say(self, message):
-        message = ':' + message
-        self.network.send('PRIVMSG', self.name, message)
+    def say(self, message, prefix = True):
+        message = doctor.prefix + message if prefix else message
+        self.network.send('PRIVMSG', self.name, ':' + message)
 
 class Connection:
     _socket   = None
@@ -339,7 +339,7 @@ class Network(Connection):
 
     @hookable
     def message(self, user, channel, message):
-        if message.startswith(config.trigger):
+        if message.startswith(doctor.trigger):
             arguments = ''
             command, *args = message[1:].split(' ', 1)
             if args:

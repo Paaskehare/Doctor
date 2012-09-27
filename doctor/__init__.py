@@ -5,7 +5,9 @@ import config
 import logging
 
 from doctor.script import ScriptManager, Alias
+from doctor.doctor import Doctor
 
+# Re-mapping of hook aliases to the root module
 from doctor.hooks import \
     message \
   , private_message \
@@ -18,10 +20,17 @@ from doctor.hooks import \
   , channel_mode \
   , user_mode
 
-hookables = {}
+# Containers for various scripting functionionality
+prefix    = '\x034>\x0F '
+trigger   = '!', '.',
 scripts   = []
+
+loaded    = []
+hookables = {}
 commands  = {}
 
-script_manager = ScriptManager()
+# Instantiate the scripting manager
+script_manager = None 
 
+# Logging format
 logging.basicConfig(format='%(asctime)s \033[1m%(levelname)s\033[0m  %(message)s', level=logging.DEBUG, datefmt='%H:%M:%S')

@@ -19,6 +19,8 @@ def command_reload(user, channel, args):
     if is_authorized(user):
         doctor.script_manager.reload()
         channel.say('Reloaded.')
+    else:
+        channel.say('You cant issue that command')
 
 def command_flags(user, channel, args):
     channel.say('You are {.nick} and have the flags {.flags}'.format(user, user))
