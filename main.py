@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # encoding: utf-8
 
-import config
 import doctor
 
 from doctor.irc import Network
@@ -17,6 +16,11 @@ options = {
       'ident':    'bot',
       'channels': ['#ole', '#doctor',],
     },
+    {
+      'host':     'irc.freenode.org',
+      'nick':     'Doctorious',
+      'channels': ['#doctor'],
+    }
   ],
 
   # Scripts to load on startup

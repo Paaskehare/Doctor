@@ -28,8 +28,11 @@ loaded    = []
 hookables = {}
 commands  = {}
 
-# Instantiate the scripting manager
+# Instantiate the scripting manager variable
 script_manager = None 
 
 # Logging format
 logging.basicConfig(format='%(asctime)s \033[1m%(levelname)s\033[0m  %(message)s', level=logging.DEBUG, datefmt='%H:%M:%S')
+
+# Instantiate the multiprocessing pool variable
+pool = None

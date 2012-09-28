@@ -1,8 +1,10 @@
 #!/usr/bin/env python
 
 import doctor
-from doctor.irc    import Network
-from doctor.script import ScriptManager
+from doctor.irc      import Network
+from doctor.script   import ScriptManager
+
+from multiprocessing import Pool, Process
 
 class Doctor:
     def __init__(self, options):
@@ -28,5 +30,10 @@ class Doctor:
         doctor.script_manager = ScriptManager()
 
     def run(self):
+
+        def worker(network):
+            network.run()
+
         for network in self.networks:
-           network.run()
+            p = Process(target=worker, args=(network,))
+            p.start()

@@ -132,12 +132,16 @@ class Connection:
             self.connect()
 
         while self.connected:
-            line = self.listener.readline()
-            line = line.strip()
-            if line:
-                response = self.parse(line)
-                if response:
-                    self.send(response)
+            try:
+                line = self.listener.readline()
+                line = line.strip()
+                if line:
+                    response = self.parse(line)
+                    if response:
+                        self.send(response)
+            except KeyboardInterrupt:
+                self.connected = False
+                logging.debug('Disconnect from %s:%s' % (self._host, self._port)) 
 
 class Network(Connection):
 
