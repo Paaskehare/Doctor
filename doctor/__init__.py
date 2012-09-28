@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 # encoding: utf-8
 
-import logging
+import os, logging
 
 from doctor.script  import ScriptManager, Alias
+from doctor.storage import Storage
 from doctor.doctor  import Doctor
 
 # Re-mapping of hook aliases to the root module
@@ -24,7 +25,6 @@ prefix    = '\x034>\x0F '
 trigger   = '!', '.',
 scripts   = []
 
-loaded    = []
 hookables = {}
 commands  = {}
 
@@ -36,3 +36,5 @@ logging.basicConfig(format='%(asctime)s \033[1m%(levelname)s\033[0m  %(message)s
 
 # Instantiate the multiprocessing pool variable
 pool = None
+
+directory = os.getcwd()

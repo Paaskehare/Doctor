@@ -1,20 +1,17 @@
 #!/usr/bin/env python
 # encoding: utf-8
 
-import doctor
-
-from doctor.irc import Network
 from doctor import Doctor
 
 options = {
   # IRC Networks to connect to
   'networks': [
-    {
-      'host':     'irc.quakenet.org',
-      'nick':     'Doctorious',
-      'ident':    'bot',
-      'channels': ['#ole', '#doctor',],
-    },
+    #{
+    #  'host':     'irc.quakenet.org',
+    #  'nick':     'Doctorious',
+    #  'ident':    'bot',
+    #  'channels': ['#ole', '#doctor',],
+    #},
     {
       'host':     'irc.freenode.org',
       'nick':     'Doctorious',
@@ -26,15 +23,15 @@ options = {
   'scripts': [
     'auth',
     'example',
-    #'wolfram',
-    #'title',
+    'wolfram',
+    'title',
   ],
 
   # Triggers the bot should treat as "commands"
   'trigger': ('!', '.',),
 
   # Prefix for all messages sent from the bot
-  'prefix': '\x034>\x0F '
+  'prefix': '\x0310>\x0F '
 }
 
 if __name__ == '__main__':

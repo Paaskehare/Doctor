@@ -5,8 +5,6 @@ import doctor
 import re
 import sys
 
-from copy import copy
-
 # Decorator for aliasing commands
 class Alias:
     def __init__(self, *aliases):
@@ -20,7 +18,11 @@ class Alias:
         return wrapper
 
 class ScriptManager:
+
+    script_dir = 'scripts.'
+
     def __init__(self):
+        self.loaded = []
         for script in doctor.scripts:
             self._load(script)
 
@@ -29,59 +31,58 @@ class ScriptManager:
 
     def _load(self, script):
         script = self.serialize(script)
-        doctor.loaded.append(script)
+
+        doctor.logging.debug('- %s "Loading %s"' % ('SCRIPT'.ljust(8), script))
+
         try:
-            plugin = __import__('scripts.' + script, {}, {}, ['plugin'], 0)
-            # if the script has an init function, execute it
-            try: plugin._init() 
-            except: pass
+            plugin = __import__(self.script_dir + script, {}, {}, ['plugin'], 0)
 
             for func in dir(plugin):
                 if func.startswith('command_'):
                     doctor.commands[func[len('command_'):]] = getattr(plugin, func)
 
+            self.loaded.append(script)
         except: # Catch all for script errors
             pass
         return
 
     def _unload(self, script):
         script = self.serialize(script)
-        doctor.loaded.remove(script)
-        plugin = 'scripts.' + script
+
         doctor.logging.debug('- %s "Unloading %s"' % ('SCRIPT'.ljust(8), script))
 
         try:
-            for func in dir(sys.modules[plugin]):
-                if func.startswith('command_'):
-                    del doctor.commands[func[len('command_'):]]
-            del sys.modules[plugin]
-        except: pass
+            plugin = sys.modules.get(self.script_dir + script, None)
+            for func in dir(plugin):
+                f = getattr(plugin, func)
+                if type(f) is doctor.Storage:
+                    f._write_file()
+                
+            del sys.modules[self.script_dir + script]
+        except:
+            pass
 
         return
 
     def exit(self):
-        loaded = copy(loaded)
-        for script in loaded:
+        for script in doctor.scripts:
             self._unload(script)
-        doctor.loaded = []
 
     def load(self, plugin):
         self._load(plugin)
-        doctor.logging.debug('- %s "Loaded %s"' % ('SCRIPT'.ljust(8), plugin))
 
-    def unload(self, plugin):
-        plugin = self.serialize(plugin)
-
-        for script in doctor.loaded:
-            self._unload(script)
-
-        doctor.loaded.remove(plugin)
+    def unload(self, script):
+        self._unload(script)
+        self.scripts.remove(script)
         self.reload()
 
     def reload(self):
-        doctor.logging.debug('- %s "Reloaded scripts"' % ('SCRIPT'.ljust(8)))
-        doctor.hookables = {}
+        self.loaded = []
+        doctor.hookables = {} # wipe and re-assign all hooks
+        doctor.commands  = {} # wipe and re-assign all commands
 
-        for script in doctor.loaded:
+        for script in doctor.scripts:
             self._unload(script)
             self._load(script)
+
+        doctor.logging.debug('- %s "Reloaded scripts"' % ('SCRIPT'.ljust(8)))
