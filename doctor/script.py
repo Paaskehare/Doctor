@@ -5,6 +5,8 @@ import doctor
 import re
 import sys
 
+from copy import copy
+
 # Decorator for aliasing commands
 class Alias:
     def __init__(self, *aliases):
@@ -46,6 +48,7 @@ class ScriptManager:
         script = self.serialize(script)
         doctor.loaded.remove(script)
         plugin = 'scripts.' + script
+        doctor.logging.debug('- %s "Unloading %s"' % ('SCRIPT'.ljust(8), script))
 
         try:
             for func in dir(sys.modules[plugin]):
@@ -55,6 +58,12 @@ class ScriptManager:
         except: pass
 
         return
+
+    def exit(self):
+        loaded = copy(loaded)
+        for script in loaded:
+            self._unload(script)
+        doctor.loaded = []
 
     def load(self, plugin):
         self._load(plugin)

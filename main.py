@@ -8,7 +8,6 @@ from doctor import Doctor
 
 options = {
   # IRC Networks to connect to
-  # TODO: Currently only supports a single network at a time, but uses an array for future implementation compatibility.
   'networks': [
     {
       'host':     'irc.quakenet.org',
@@ -27,8 +26,8 @@ options = {
   'scripts': [
     'auth',
     'example',
-    'wolfram',
-    'title',
+    #'wolfram',
+    #'title',
   ],
 
   # Triggers the bot should treat as "commands"

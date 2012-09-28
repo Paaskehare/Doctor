@@ -3,8 +3,8 @@
 
 import logging
 
-from doctor.script import ScriptManager, Alias
-from doctor.doctor import Doctor
+from doctor.script  import ScriptManager, Alias
+from doctor.doctor  import Doctor
 
 # Re-mapping of hook aliases to the root module
 from doctor.hooks import \

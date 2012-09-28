@@ -4,7 +4,14 @@ import doctor
 from doctor.irc      import Network
 from doctor.script   import ScriptManager
 
-from multiprocessing import Pool, Process
+from multiprocessing import Queue, Process
+#from multiprocessing.queues import Queue
+
+import logging
+import multiprocessing
+
+#logger = multiprocessing.log_to_stderr()
+#logger.setLevel(multiprocessing.SUBDEBUG)
 
 class Doctor:
     def __init__(self, options):
@@ -20,7 +27,7 @@ class Doctor:
                ident    = network.get('ident', ''),
                realname = network.get('realname', ''),
                channels = network.get('channels', []),
-           ) for network in options['networks'] # We can only use the first network as of now
+           ) for network in options['networks'] 
         ]
 
         doctor.trigger  = options.get('trigger', doctor.trigger)
@@ -31,9 +38,17 @@ class Doctor:
 
     def run(self):
 
-        def worker(network):
-            network.run()
 
+        def worker(q, network):
+            q.put(network.run(), False)
+
+            # Make for a clean exit so we can save the storage:
+            if q.empty():
+                # save the storage objects for scripts
+                doctor.script_manager.exit()
+
+        q = Queue()
         for network in self.networks:
-            p = Process(target=worker, args=(network,))
+            p = Process(target=worker, args=(q, network,))
             p.start()
+
