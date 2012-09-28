@@ -5,13 +5,9 @@ from doctor.irc      import Network
 from doctor.script   import ScriptManager
 
 from multiprocessing import Queue, Process
-#from multiprocessing.queues import Queue
 
 import logging
 import multiprocessing
-
-#logger = multiprocessing.log_to_stderr()
-#logger.setLevel(multiprocessing.SUBDEBUG)
 
 class Doctor:
     def __init__(self, options):
