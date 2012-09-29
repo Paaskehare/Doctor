@@ -21,8 +21,8 @@ from doctor.hooks import \
   , user_mode
 
 # Containers for various scripting functionionality
-prefix    = '\x034>\x0F '
-trigger   = '!', '.',
+prefix    = '\x0310>\x0F '  # Default prefix if none is given
+trigger   = '!', '.',       # Default triggers
 scripts   = []
 
 hookables = {}

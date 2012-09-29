@@ -40,11 +40,9 @@ class Storage(object):
 
     def _write_file(self):
         # Only write the file if it contains anything
-        print('Writing storage file')
         if self.__dict__['storage']:
             output = json.dumps(self.__dict__['storage'], indent=4)
             p, f = self._path()
-            print(p)
 
             if not os.path.exists(p): os.mkdir(p)
             with open(f, 'w') as fo:

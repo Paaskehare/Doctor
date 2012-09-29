@@ -355,6 +355,7 @@ class Network(Connection):
                     traceback = extract_tb(exc.__traceback__)
                     for e in traceback:
                       f, l, m, s = e
+                      # Avoid outputting traceback to this file
                       if not f.endswith('doctor/irc.py'):
                         logging.warning('File "%s", line %s, in %s' % (f, l, m))
                         logging.warning('  %s' % s)

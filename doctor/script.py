@@ -5,6 +5,8 @@ import doctor
 import re
 import sys
 
+from copy import copy
+
 # Decorator for aliasing commands
 class Alias:
     def __init__(self, *aliases):
@@ -67,9 +69,10 @@ class ScriptManager:
 
         return
 
-    def exit(self):
-        for script in doctor.scripts:
+    def unload_all(self):
+        for script in self.loaded:
             self._unload(script)
+        self.loaded = []
 
     def load(self, plugin):
         self._load(plugin)
@@ -80,11 +83,11 @@ class ScriptManager:
         self.reload()
 
     def reload(self):
-        self.loaded = []
+        loaded = copy(self.loaded)
         doctor.hookables = {} # wipe and re-assign all hooks
         doctor.commands  = {} # wipe and re-assign all commands
 
-        for script in doctor.scripts:
+        for script in loaded:
             self._unload(script)
             self._load(script)
 

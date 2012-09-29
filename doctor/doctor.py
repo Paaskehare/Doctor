@@ -12,7 +12,7 @@ import multiprocessing
 class Doctor:
     def __init__(self, options):
         if not options.get('networks'):
-            print('No networks defined, exiting ..')
+            logging.warning('No networks defined, exiting.')
             return
 
         self.networks   = [
@@ -20,13 +20,13 @@ class Doctor:
                host     = network.get('host'),
                port     = network.get('port',     6667),
                nick     = network.get('nick'),
-               ident    = network.get('ident', ''),
+               ident    = network.get('ident',    ''),
                realname = network.get('realname', ''),
                channels = network.get('channels', []),
            ) for network in options['networks'] 
         ]
 
-        doctor.trigger  = options.get('trigger', doctor.trigger)
+        doctor.trigger  = options.get('trigger',  doctor.trigger)
         doctor.prefix   = options.get('prefix',   doctor.prefix)
         doctor.scripts  = options.get('scripts',  doctor.scripts)
 
@@ -40,8 +40,8 @@ class Doctor:
 
             # Make for a clean exit so we can save the storage:
             if q.empty():
-                # save the storage objects for scripts
-                doctor.script_manager.exit()
+                # cleanly unload the scripts
+                doctor.script_manager.unload_all()
 
         q = Queue()
         for network in self.networks:
