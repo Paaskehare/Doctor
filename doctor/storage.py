@@ -34,7 +34,7 @@ class Storage(object):
 
     def _read_file(self):
         p, f = self._path()
-        if os.path.exists(p):
+        if os.path.exists(f):
             with open(f) as fo:
                 self.__dict__['storage'] = json.loads(fo.read())
 

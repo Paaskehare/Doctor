@@ -16,10 +16,10 @@ logging = doctor.logging
 _valid_user_flag = '+', '@', '%', '&', '~', 'q'
 
 class User:
-    nick      = ""
-    ident     = ""
-    host      = ""
-    flags     = ""
+    nick      = ''
+    ident     = ''
+    host      = ''
+    flags     = ''
     channels  = []
 
     network = None
@@ -54,7 +54,7 @@ class User:
         }.get(prefix, '')
 
 class Channel:
-    name = ""
+    name = ''
     users = []
 
     network = None
@@ -237,7 +237,7 @@ class Network(Connection):
     def got_mode(self, host, mode, receiver, rest):
         return
 
-    def __init__(self, host, port, nick, ident = "", realname = "", channels = []):
+    def __init__(self, host, port, nick, ident = '', realname = '', channels = []):
 
         self._actions = {
           '353':     self.got_names,
@@ -280,7 +280,7 @@ class Network(Connection):
     def user_by_nick(self, nick, create=False):
         user = None
 
-        flags = ""
+        flags = ''
 
         if create and nick.startswith(_valid_user_flag):
             flags += nick[0]
@@ -332,7 +332,7 @@ class Network(Connection):
     def channel_by_name(self, name):
         return self.channels.get(name, None)
 
-    def join(self, channel, password=""):
+    def join(self, channel, password=''):
         self.send('JOIN', channel, password)
 
     '''

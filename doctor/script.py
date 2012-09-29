@@ -42,6 +42,7 @@ class ScriptManager:
                     doctor.commands[func[len('command_'):]] = getattr(plugin, func)
 
             self.loaded.append(script)
+            doctor.logging.debug('- %s "Successfully Loaded %s"' % ('SCRIPT'.ljust(8), script))
         except: # Catch all for script errors
             pass
         return
@@ -53,12 +54,14 @@ class ScriptManager:
 
         try:
             plugin = sys.modules.get(self.script_dir + script, None)
-            for func in dir(plugin):
-                f = getattr(plugin, func)
-                if type(f) is doctor.Storage:
-                    f._write_file()
+            if plugin:
+                for func in dir(plugin):
+                    f = getattr(plugin, func)
+                    if type(f) is doctor.Storage:
+                        f._write_file()
                 
-            del sys.modules[self.script_dir + script]
+                del sys.modules[self.script_dir + script]
+                self.loaded.remove(script)
         except:
             pass
 

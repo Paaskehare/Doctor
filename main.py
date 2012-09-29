@@ -23,6 +23,7 @@ options = {
   'scripts': [
     'auth',
     'example',
+    'notify',
     'wolfram',
     'title',
   ],

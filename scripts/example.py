@@ -7,7 +7,7 @@ cache = doctor.Storage('example')
 
 # example of initiating a simple storage object:
 if not cache.messages:
-	cache.messages = {}
+    cache.messages = {}
 
 @doctor.Alias('hej', 'yo', 'heya')
 def command_hi(user, channel, message):
