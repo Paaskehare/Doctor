@@ -34,6 +34,6 @@ def command_calc(user, channel, arguments):
   result = wolfram(arguments)
 
   if result:
-    channel.say('%(question)s \x034=\x03 %(answer)s' % result)
+    channel.say('%(question)s \x0310=\x03 %(answer)s' % result)
   else:
     channel.say('No result')

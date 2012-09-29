@@ -32,7 +32,7 @@ def title(url):
         page = read_page('http://gdata.youtube.com/feeds/videos/%s?alt=json' % youtube.group(4)).decode('utf-8')
         result = json.loads(page)['entry']
 
-        return '(\x034%s\x03) %s' % (
+        return '(\x0310%s\x03) %s' % (
           result['media$group']['media$category'][0]['label'], 
           result['title']['$t']
         )
