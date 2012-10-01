@@ -9,7 +9,7 @@ cache = doctor.Storage('example')
 if not cache.messages:
     cache.messages = {}
 
-@doctor.Alias('hej', 'yo', 'heya')
+@doctor.alias('hej', 'yo', 'heya')
 def command_hi(user, channel, message):
     channel.say("Hey! You are \x02{.nick}\x02".format(user))
 

@@ -3,7 +3,7 @@
 
 import os, logging
 
-from doctor.script  import ScriptManager, Alias
+from doctor.script  import ScriptManager, Alias as alias
 from doctor.storage import Storage
 from doctor.doctor  import Doctor
 

@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # encoding: utf-8
 
+import doctor
+
 from urllib.request import urlopen
 from urllib.parse import urlencode
 from xml.etree import ElementTree as etree
@@ -30,6 +32,7 @@ def wolfram(expression):
     }
   return
 
+@doctor.alias('c')
 def command_calc(user, channel, arguments):
   result = wolfram(arguments)
 

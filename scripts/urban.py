@@ -7,7 +7,7 @@ from urllib.request import urlopen
 from urllib.parse import urlencode
 import json
 
-@doctor.Alias('u')
+@doctor.alias('u')
 def command_urban(user, channel, args):
     if not args: return
     
