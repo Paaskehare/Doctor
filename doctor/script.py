@@ -6,6 +6,9 @@ import re
 import sys
 
 from copy import copy
+from traceback import extract_tb
+
+logging = doctor.logging
 
 # Decorator for aliasing commands
 class Alias:
@@ -45,7 +48,19 @@ class ScriptManager:
 
             self.loaded.append(script)
             doctor.logging.debug('- %s "Successfully Loaded %s"' % ('SCRIPT'.ljust(8), script))
-        except: # Catch all for script errors
+        
+        except BaseException as exc: # Catch all for script errors
+            traceback = extract_tb(exc.__traceback__)
+            for e in traceback:
+                f, l, m, s = e
+
+                # only catch errors for the script
+                if f.endswith('%s.py' % script):
+                    logging.warning('File "%s", line %s, in %s' % (f, l, m))
+                    logging.warning('  %s' % s)
+
+                logging.warning('%s: %s' % (exc.__class__.__name__, exc))
+        except: # Error cannot be caught, just pass
             pass
         return
 
