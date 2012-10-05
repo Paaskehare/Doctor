@@ -3,6 +3,7 @@
 
 import socket
 import ssl
+from asynchat import async_chat
 
 from traceback import extract_tb
 
@@ -85,6 +86,28 @@ class Connection:
             self._host = self._host[1:]
             self._ssl = True
 
+
+    '''
+        Decode function to decode from bytes to string format
+        tries three different encodings which should work >90% of the time
+        if it for some reason does not work with these values, it will default to utf-8 and replace errornous characters
+    '''
+
+    def decode(self, bytes):
+        text = ''
+        try:
+            text = bytes.decode('utf-8')
+        except UnicodeDecodeError:
+            try:
+                text = bytes.decode('iso-8859-1')
+            except UnicodeDecodeError:
+                try:
+                    text = bytes.decode('cp1252')
+                except UnicodeDecodeError:
+                    text = bytes.decode('utf-8', errors='replace')
+        return text
+
+
     def connect(self):
         logging.debug('Establishing connection to %s:%s' % (self._host, self._port))
         self._socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -97,7 +120,7 @@ class Connection:
             logging.warning(error)
             return False
 
-        self.listener = self._socket.makefile('r', 512)
+        self.listener = self._socket.makefile('rb', 512)
 
         self.connected = True
         return self.connected
@@ -131,7 +154,7 @@ class Connection:
 
         while self.connected:
             try:
-                line = self.listener.readline()
+                line = self.decode(self.listener.readline())
                 line = line.strip()
                 if line:
                     response = self.parse(line)
@@ -139,7 +162,9 @@ class Connection:
                         self.send(response)
             except KeyboardInterrupt:
                 self.connected = False
-                logging.debug('Disconnect from %s:%s' % (self._host, self._port)) 
+                logging.debug('Disconnect from %s:%s' % (self._host, self._port))
+
+
 
 class Network(Connection):
 
